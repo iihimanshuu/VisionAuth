@@ -3,181 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisionAuth - Advanced Facial Analysis Platform</title>
+    <title>Talk to Your GitHub</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- MediaPipe Face Landmarks -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 </head>
 <body>
-    <div class="fullscreen-container">
-        <!-- Video Background -->
-        <div class="video-background">
-            <video id="video" autoplay muted playsinline></video>
-            <canvas id="canvas"></canvas>
-        </div>
-
-        <!-- Professional Header -->
-        <header class="app-header">
-            <div class="header-content">
-                <div class="logo-section">
-                    <div class="logo-icon">VA</div>
-                    <div class="logo-text">
-                        <h1>VisionAuth</h1>
-                        <span class="subtitle">Advanced Facial Analysis Platform</span>
-                    </div>
-                </div>
-                <div class="header-actions">
-                    <button class="header-btn" id="docsBtn">Documentation</button>
-                    <button class="header-btn" id="supportBtn">Support</button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Professional Mode Selection Panel -->
-        <div class="mode-panel" id="modePanel">
-            <div class="panel-header">
-                <h2>Configuration Center</h2>
-                <p>Select your analysis parameters and deployment mode</p>
-            </div>
-            
-            <div class="mode-selection">
-                <div class="mode-option" data-mode="performance">
-                    <div class="mode-icon">⚡</div>
-                    <div class="mode-content">
-                        <h3>Performance Mode</h3>
-                        <p>Optimized for real-time processing with reduced latency</p>
-                        <div class="mode-specs">
-                            <span>• 640x480 Resolution</span>
-                            <span>• 30 FPS Processing</span>
-                            <span>• Low Resource Usage</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mode-option" data-mode="accuracy">
-                    <div class="mode-icon">🎯</div>
-                    <div class="mode-content">
-                        <h3>Precision Mode</h3>
-                        <p>Enhanced accuracy with detailed facial landmark analysis</p>
-                        <div class="mode-specs">
-                            <span>• 1280x720 Resolution</span>
-                            <span>• 468 Landmark Points</span>
-                            <span>• High Detail Processing</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="feature-selection" id="featureSelection" style="display: none;">
-                <div class="selection-header">
-                    <h3>Analysis Module Selection</h3>
-                    <p>Choose your primary analysis focus</p>
-                </div>
-                <div class="feature-toggles">
-                    <label class="feature-toggle">
-                        <input type="radio" name="analysisType" value="emotions" checked>
-                        <div class="toggle-content">
-                            <div class="toggle-icon">😊</div>
-                            <div class="toggle-text">
-                                <span class="toggle-title">Emotion Recognition</span>
-                                <span class="toggle-desc">Real-time facial expression analysis</span>
-                            </div>
-                        </div>
-                    </label>
-                    <label class="feature-toggle">
-                        <input type="radio" name="analysisType" value="age">
-                        <div class="toggle-content">
-                            <div class="toggle-icon">📊</div>
-                            <div class="toggle-text">
-                                <span class="toggle-title">Age Estimation</span>
-                                <span class="toggle-desc">Advanced demographic analysis</span>
-                            </div>
-                        </div>
-                    </label>
-                </div>
-                <button class="start-analysis-btn" id="startAnalysisBtn">Initialize Analysis Engine</button>
-            </div>
-        </div>
-
-        <!-- Professional Analysis Dashboard -->
-        <div class="analysis-dashboard" id="analysisBox" style="display: none;">
-            <div class="dashboard-header">
-                <div class="dashboard-title">
-                    <h3>Live Analysis Dashboard</h3>
-                    <div class="status-indicator active" id="statusIndicator"></div>
-                </div>
-                <div class="dashboard-controls">
-                    <button class="control-btn" id="exportBtn">Export Data</button>
-                    <button class="control-btn" id="settingsBtn">Settings</button>
-                </div>
-            </div>
-            <div class="dashboard-content">
-                <div class="metric-grid">
-                    <div class="metric-card">
-                        <div class="metric-header">
-                            <span class="metric-label">Analysis Mode</span>
-                            <span class="metric-icon">⚙️</span>
-                        </div>
-                        <div class="metric-value" id="modeValue">--</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-header">
-                            <span class="metric-label">Active Module</span>
-                            <span class="metric-icon">🔧</span>
-                        </div>
-                        <div class="metric-value" id="featureValue">--</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-header">
-                            <span class="metric-label">Detection Result</span>
-                            <span class="metric-icon">📈</span>
-                        </div>
-                        <div class="metric-value" id="resultValue">--</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-header">
-                            <span class="metric-label">Confidence Level</span>
-                            <span class="metric-icon">🎯</span>
-                        </div>
-                        <div class="metric-value" id="confidenceValue">--</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Professional Control Panel -->
-        <div class="control-panel" id="controlPanel" style="display: none;">
-            <div class="control-group">
-                <button class="control-btn primary" id="stopBtn">
-                    <span class="btn-icon">⏹️</span>
-                    <span class="btn-text">Terminate Session</span>
-                </button>
-                <button class="control-btn secondary" id="fullscreenBtn">
-                    <span class="btn-icon">⛶</span>
-                    <span class="btn-text">Fullscreen</span>
-                </button>
-                <button class="control-btn secondary" id="changeModeBtn">
-                    <span class="btn-icon">⚙️</span>
-                    <span class="btn-text">Reconfigure</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Professional Loading Overlay -->
-        <div class="loading-overlay hidden" id="loadingOverlay">
-            <div class="loading-content">
-                <div class="loading-spinner"></div>
-                <div class="loading-text">
-                    <h3>Initializing Analysis Engine</h3>
-                    <p>Establishing secure camera connection...</p>
-                </div>
-            </div>
-        </div>
+    <div class="container">
+        <h1>Talk to Your GitHub</h1>
+        <input type="text" id="repoUrl" placeholder="Enter GitHub repo URL (e.g., https://github.com/owner/repo)">
+        <input type="text" id="question" placeholder="Ask a question about the code">
+        <input type="password" id="token" placeholder="GitHub Personal Access Token">
+        <button id="askBtn">Ask</button>
+        <div id="response"></div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html> 
